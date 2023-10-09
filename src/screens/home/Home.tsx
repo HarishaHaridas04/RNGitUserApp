@@ -11,10 +11,10 @@ import {
 import AppHeader from '../../components/AppHeader';
 import UserCard from './components/UserCard';
 import SearchInput from 'components/SearchInput';
-import { Octokit } from "@octokit/rest";
 import { colorTokens } from 'theme/Colors';
 import { UserShimmerView } from 'components/shimmerViews/UserShimmerView';
 import FetchUserDetails from 'utils/FetchUserDetails';
+import { GET_USER_DETAILS } from 'utils/GitQueries';
 
 interface IProps {
     navigation?: NativeStackNavigationProp<any, any>;
@@ -29,23 +29,6 @@ const Home = ({ navigation, }: IProps) => {
     const [refresh, setRefresh] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
 
-    const GET_USER_DETAILS = `
-    query GetUserDetails($username: String!) {
-        user(login: $username) {
-          login
-          name
-          location
-          bio
-          avatarUrl
-          followers {
-            totalCount
-          }
-          following {
-            totalCount
-          }
-        }
-      }
-    `;
 
     const onSearchUser = async (text: string) => {
         setSearchData(null);
@@ -137,11 +120,11 @@ const Home = ({ navigation, }: IProps) => {
                                 following={searchData.following.totalCount}
                                 blog={searchData.blog ?? ''}
                                 location={searchData.location ?? ''}
-                                twitteUsername={searchData.twitter_username ?? ''}
+                                twitteUsername={searchData.twitterUsername ?? ''}
                                 userImage={searchData.avatarUrl}
                                 email={searchData.email ?? ''}
-                                onPressFollowers={() => navigation?.navigate('FollowList', { login: searchData.login, type: 'followers' })}
-                                onPressFollowing={() => navigation?.navigate('FollowList', { login: searchData.login, type: 'following' })}
+                                onPressFollowers={() => navigation?.navigate('FollowList', { login: searchData.followers.edges, type: 'followers' })}
+                                onPressFollowing={() => navigation?.navigate('FollowList', { login: searchData.following.edges, type: 'following' })}
                             />
                         </View>
                         : renderNoData()}

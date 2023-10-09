@@ -20,30 +20,39 @@ const FollowerCard = ({ name, userName, location, description, onPressCard, user
       style={[
         styles.mainCardView,
       ]}>
-      <View style={styles.logoView}>
+      <View style={[styles.logoView,]}>
         <View style={styles.logoContainer}>
           <Image
             source={{ uri: userImage } ?? require('../../../../assets/images/gitUser.png')}
             resizeMode={'contain'}
             blurRadius={22}
-            style={{ height: 44, width: 44 }}
+            style={{ height: 40, width: 40 }}
           />
         </View>
-        <View style={styles.userDetails}>
-          <View>
+        <View style={[styles.userDetails, ]}>
+          {
+            name !== '' &&
             <Text style={[styles.name, { color: '#1C1243' }]}
               numberOfLines={1}
               ellipsizeMode="tail"
             >{name}</Text>
+          }
+          {
+            userName !== '' &&
             <Text style={[styles.userName, { color: '#1C1243' }]}
               numberOfLines={1}
               ellipsizeMode="tail"
             >{userName}</Text>
-          </View>
-          <Text style={styles.userData}
-            numberOfLines={1}
-            ellipsizeMode="tail"
-          >{description}</Text>
+          }
+
+          {
+            description !== '' &&
+            <Text style={styles.userData}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >{description}</Text>
+          }
+
           {location !== '' &&
             <IconTextComponent
               iconName={'location'}
@@ -59,7 +68,7 @@ const FollowerCard = ({ name, userName, location, description, onPressCard, user
           titleColor={colorTokens.dark80}
           buttonName="Follow"
           buttonStyle={styles.followButton}
-          textStyle={{ fontSize: 16, color: colorTokens.dark80}}
+          textStyle={{ fontSize: 16, color: colorTokens.dark80 }}
         />
       </View>
     </TouchableOpacity>
@@ -80,18 +89,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  subCardView: {
-    height: 80,
-    width: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.history_back,
-    borderStyle: 'solid',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   userDetails: {
     marginHorizontal: 8,
-    width: '50%'
+    width: '50%',
+    justifyContent: 'center',
   },
   userName: {
     fontSize: 14,
@@ -130,7 +131,9 @@ const styles = StyleSheet.create({
   logoContainer: {
     height: 44,
     width: 44,
-    borderRadius: 22
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });
 

@@ -20,15 +20,15 @@ const AppHeader = ({
 }: AppHeaderPropTypes) => {
   return (
     <View style={styles.header}>
-      {hasBack ? (
+      {hasBack && (
         <TouchableOpacity
-          style={[styles.buttonStyle, { alignItems: 'flex-start' }]}
+          style={[styles.buttonStyle, ]}
           onPress={() => navigation.goBack()}>
-          <Icon name={'chevron-back'} size={20} color={'#000000'}/>
+          <Icon name={'chevron-back'} size={28} color={'#000000'}/>
         </TouchableOpacity>
-      ) : null}
+      ) }
       <Text
-        style={[styles.headerText, { width: '80%', }]}
+        style={[styles.headerText, { width: '80%' }]}
         numberOfLines={1}
         ellipsizeMode="tail">
         {title}
@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    paddingHorizontal: 12,
     marginBottom: 24,
     margin: 8
   },
@@ -55,7 +56,7 @@ const styles = StyleSheet.create({
     height: 44,
     width: 44,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   }
 });
 

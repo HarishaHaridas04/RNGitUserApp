@@ -25,11 +25,14 @@ const IconTextComponent = (props: IconTextComponentProps) => {
             </View>
             <View style={styles.text}>
                 <Text
+                   numberOfLines={1}
+                   ellipsizeMode="tail"
                     style={[
                       styles.textStyle,
+                      
                         {
                             color: textColor || colorTokens.black,
-                            fontSize: fontSize ?? 14  ,
+                            fontSize: fontSize ?? 12  ,
                         },
                     ]}>
                     {text}
@@ -43,18 +46,18 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'flex-start'
     },
     iconStyle: {
         justifyContent: 'center',
         alignItems: 'center',
-        paddingRight: 8,
+        paddingRight: 4,
     },
     text: {
         justifyContent: 'center',
         alignItems: 'center',
         paddingVertical: 4,
-        paddingRight: 8,
+        paddingRight: 2,
     },
     textStyle: {
         

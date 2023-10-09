@@ -4,12 +4,13 @@ const apiUrl = 'https://api.github.com/graphql';
 const token = process.env.API_TOKEN;
 
 const fetchUserDetails = async (query, variables) => {
+  console.log(variables, '<==========variables')
   try {
     const response = await axios.post(
       apiUrl,
       {
         query, 
-        variables,
+        variables
       },
       {
         headers: {

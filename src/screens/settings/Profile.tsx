@@ -8,10 +8,11 @@ import {
     View
 } from 'react-native';
 import AppHeader from '../../components/AppHeader';
-import { Octokit } from "@octokit/rest";
 import { colorTokens } from 'theme/Colors';
 import UserCard from 'screens/home/components/UserCard';
 import { UserShimmerView } from 'components/shimmerViews/UserShimmerView';
+import FetchUserDetails from 'utils/FetchUserDetails';
+import { GET_USER_DETAILS } from 'utils/GitQueries';
 
 
 const Profile = ({ route, navigation, }) => {
@@ -20,10 +21,7 @@ const Profile = ({ route, navigation, }) => {
 
     const [profileData, setProfileData] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(false);
-
-    const octokit = new Octokit({
-        auth: process.env.API_TOKEN
-    });
+  
 
     useEffect(() => {
         fetchUserDetailes();
@@ -32,15 +30,11 @@ const Profile = ({ route, navigation, }) => {
     const fetchUserDetailes = async () => {
         setLoading(true);
         try {
-            await octokit.users.getByUsername({
-                username: userName,
-            })
-
+        
+            await FetchUserDetails(GET_USER_DETAILS, { username: userName })
                 .then(response => {
-                    // Handle the response response.data.profileData =========> search user
-                    console.warn(response.data, '<=====================================================response thellecodes');
-                    if (response.data !== null) {
-                        setProfileData(response.data);
+                    if (response !== null) {
+                        setProfileData(response);
                         setLoading(false);
                     } else {
                         setProfileData(null)
@@ -94,15 +88,15 @@ const Profile = ({ route, navigation, }) => {
                                 name={profileData.name}
                                 userName={profileData.login}
                                 description={profileData.bio}
-                                followers={profileData.followers}
-                                following={profileData.following}
+                                followers={profileData.followers.totalCount}
+                                following={profileData.following.totalCount}
                                 blog={profileData.blog ?? ''}
                                 location={profileData.location ?? ''}
-                                twitteUsername={profileData.twitter_username ?? ''}
-                                userImage={profileData.avatar_url}
+                                twitteUsername={profileData.twitterUsername ?? ''}
+                                userImage={profileData.avatarUrl}
                                 email={profileData.email ?? ''}
-                                onPressFollowers={() => navigation?.navigate('FollowList', { login: profileData.login, type: 'followers' })}
-                                onPressFollowing={() => navigation?.navigate('FollowList', { login: profileData.login, type: 'following' })}
+                                onPressFollowers={() => navigation?.navigate('FollowList', { login: profileData.followers.edges, type: 'followers' })}
+                                onPressFollowing={() => navigation?.navigate('FollowList', { login: profileData.following.edges, type: 'following' })}
                             />
                         </View>
                         : renderNoData()}
@@ -114,7 +108,6 @@ const Profile = ({ route, navigation, }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 0,
         backgroundColor: colorTokens.white,
     },
     headerText: {

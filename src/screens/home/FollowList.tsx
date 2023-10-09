@@ -25,37 +25,33 @@ const FollowList = ({ route, navigation }) => {
     const [offsetValue, setOffsetValue] = useState(0);
     const isFocused = useIsFocused();
 
-    const octokit = new Octokit({
-        auth: process.env.API_TOKEN
-    });
-
+  
     useEffect(() => {
         setUserData([]);
         setOffsetValue(0);
         fetchEmployeeData(offsetValue);
     }, [refreshing, isFocused]);
 
+    console.log(login, '<===========login.node');
 
     const fetchEmployeeData = async (offset: number) => {
 
-        try {
-            await octokit.request(`/users/${login}/${type}`)
-                .then(response => {
-                    if (response.data.length !== 0) {
+  
+       
+         
+                    if (login.length !== 0) {
                         const list =
                             offset === 0
-                                ? response.data
-                                : [...userData, ...response.data];
+                                ? login
+                                : [...userData, ...login];
                         setUserData(list);
                         setLoading(false);
                         setRefreshing(false);
                     } else {
                         setLoading(false);
                     }
-                })
-        } catch (error: any) {
-            setLoading(false);
-        }
+            
+        
     };
 
 
@@ -98,7 +94,7 @@ const FollowList = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
-            <AppHeader title={type === "Followers" ? 'Followers' : 'following'} hasBack={true} />
+            <AppHeader title={type === "Followers" ? 'Followers' : 'Following'} hasBack={true} />
             <View style={{ padding: 24, paddingBottom: 80 }}>
                 <FlatList
                     showsVerticalScrollIndicator={false}
@@ -107,18 +103,18 @@ const FollowList = ({ route, navigation }) => {
                         item.name !== '' ? (
                             <View style={{ paddingTop: 8, marginBottom: 8 }}>
                                 <FollowerCard
-                                    name={item.name}
-                                    userName={item.login}
+                                    name={item.node.name}
+                                    userName={item.node.login}
                                     onPressCard={() => {
                                         setUserData([]);
                                         setRefreshing(true);
                                         setLoading(true);
-                                        navigation?.navigate('Profile', { userName: item.login })
+                                        navigation?.navigate('Profile', { userName: item.node.login })
                                     }
                                     }
-                                    description={item.description}
-                                    location={item.location ?? ''}
-                                    userImage={item.avatar_url}
+                                    description={item.node.description ?? ''}
+                                    location={item.node.location ?? ''}
+                                    userImage={item.node.avatarUrl}
                                 />
                             </View>
                         ) : null
