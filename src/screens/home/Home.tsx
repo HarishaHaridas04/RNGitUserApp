@@ -14,6 +14,7 @@ import SearchInput from 'components/SearchInput';
 import { Octokit } from "@octokit/rest";
 import { colorTokens } from 'theme/Colors';
 import { UserShimmerView } from 'components/shimmerViews/UserShimmerView';
+import FetchUserDetails from 'utils/FetchUserDetails';
 
 interface IProps {
     navigation?: NativeStackNavigationProp<any, any>;
@@ -27,9 +28,24 @@ const Home = ({ navigation, }: IProps) => {
     const [error, setError] = useState<string>('');
     const [refresh, setRefresh] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
-    const octokit = new Octokit({
-        auth: process.env.API_TOKEN
-    });
+
+    const GET_USER_DETAILS = `
+    query GetUserDetails($username: String!) {
+        user(login: $username) {
+          login
+          name
+          location
+          bio
+          avatarUrl
+          followers {
+            totalCount
+          }
+          following {
+            totalCount
+          }
+        }
+      }
+    `;
 
     const onSearchUser = async (text: string) => {
         setSearchData(null);
@@ -37,13 +53,11 @@ const Home = ({ navigation, }: IProps) => {
         setRefresh(false);
         if (text.length > 0) {
             try {
-                await octokit.users.getByUsername({
-                    username: text,
-                })
+                await FetchUserDetails(GET_USER_DETAILS, { username: text })
                     .then(response => {
                         setError('');
-                        if (response.data !== null) {
-                            setSearchData(response.data);
+                        if (response !== null) {
+                            setSearchData(response);
                             setLoading(false);
 
                         } else {
@@ -119,12 +133,12 @@ const Home = ({ navigation, }: IProps) => {
                                 name={searchData.name}
                                 userName={searchData.login}
                                 description={searchData.bio}
-                                followers={searchData.followers}
-                                following={searchData.following}
+                                followers={searchData.followers.totalCount}
+                                following={searchData.following.totalCount}
                                 blog={searchData.blog ?? ''}
                                 location={searchData.location ?? ''}
                                 twitteUsername={searchData.twitter_username ?? ''}
-                                userImage={searchData.avatar_url}
+                                userImage={searchData.avatarUrl}
                                 email={searchData.email ?? ''}
                                 onPressFollowers={() => navigation?.navigate('FollowList', { login: searchData.login, type: 'followers' })}
                                 onPressFollowing={() => navigation?.navigate('FollowList', { login: searchData.login, type: 'following' })}
